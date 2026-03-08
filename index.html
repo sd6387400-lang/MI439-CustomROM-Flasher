@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MI439 Flasher | ROM Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --bg-base: #f8f9ff;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --text-main: #1a1c1e;
+            --text-dim: #44474e;
+            --accent: #006494; /* Back to Blue Vibe */
+            --danger: #d32f2f; /* Red for warnings only */
+            --success: #2e7d32; /* Green for ROMs */
+            --sidebar-bg: rgba(255, 255, 255, 0.98);
+            --border: rgba(0, 0, 0, 0.05);
+            --blob-1: #d0e4ff;
+            --blob-2: #e1dfff;
+            --btn-bg: #1a1c1e;
+            --btn-text: #ffffff;
+            --overlay: rgba(0, 0, 0, 0.2);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-base: #0f1115;
+                --card-bg: rgba(26, 28, 30, 0.6);
+                --text-main: #e2e2e6;
+                --text-dim: #c4c6cf;
+                --accent: #91cdff;
+                --danger: #ff8a80;
+                --success: #81c784;
+                --sidebar-bg: rgba(15, 17, 21, 0.98);
+                --border: rgba(255, 255, 255, 0.08);
+                --blob-1: #1e2a3d;
+                --blob-2: #28224d;
+                --btn-bg: #f8f9ff;
+                --btn-text: #111318;
+                --overlay: rgba(0, 0, 0, 0.6);
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-base); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+
+        /* --- Background --- */
+        .bg-wrapper { position: fixed; inset: 0; z-index: -1; filter: blur(90px); overflow: hidden; }
+        .blob { position: absolute; width: 700px; height: 700px; border-radius: 50%; opacity: 0.6; animation: blobMove 25s infinite alternate ease-in-out; }
+        .blob-1 { background: var(--blob-1); top: -15%; left: -10%; }
+        .blob-2 { background: var(--blob-2); bottom: -15%; right: -10%; animation-delay: -7s; }
+        @keyframes blobMove { from { transform: translate(0, 0); } to { transform: translate(100px, 50px); } }
+
+        /* --- Sidebar & UI --- */
+        #overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 999; opacity: 0; visibility: hidden; transition: 0.4s; backdrop-filter: blur(6px); }
+        #overlay.active { opacity: 1; visibility: visible; }
+        .menu-btn { position: fixed; top: 25px; left: 25px; z-index: 1001; background: var(--card-bg); border: 1px solid var(--border); padding: 12px; border-radius: 16px; cursor: pointer; backdrop-filter: blur(15px); transition: 0.3s; }
+        .menu-btn:hover { border-color: var(--accent); transform: scale(1.05); }
+        
+        .sidebar { position: fixed; top: 0; left: -320px; width: 320px; height: 100vh; background: var(--sidebar-bg); z-index: 1000; padding: 100px 25px 40px; transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1); border-right: 1px solid var(--border); overflow-y: auto; }
+        .sidebar.active { left: 0; }
+        .sidebar-header { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin: 25px 0 10px 12px; font-weight: 800; }
+        .sidebar-item { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-dim); font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; padding: 12px; border-radius: 12px; transition: 0.2s; cursor: pointer; }
+        .sidebar-item:hover { background: var(--border); color: var(--text-main); transform: translateX(5px); }
+        .sidebar-item.active-rel { background: var(--accent); color: var(--bg-base); }
+
+        /* --- Content Layout --- */
+        .content { padding: 120px 24px 80px; max-width: 1100px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 40px; }
+        @media (min-width: 960px) {
+            .content { flex-direction: row; align-items: flex-start; }
+            .left-panel { flex: 1; position: sticky; top: 120px; }
+            .right-panel { flex: 1.4; }
+        }
+
+        .glass-card { background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 35px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
+
+        /* --- Components --- */
+        h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -3px; line-height: 1; margin-bottom: 15px; }
+        .tool-badge { color: var(--accent); background: rgba(0, 100, 148, 0.1); padding: 6px 14px; border-radius: 50px; font-weight: 800; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+
+        /* --- Warning Box (Strategic Red) --- */
+        .warning-box { background: rgba(211, 47, 47, 0.05); color: var(--danger); padding: 22px; border-radius: 24px; font-size: 0.9rem; font-weight: 600; border: 1px solid rgba(211, 47, 47, 0.15); margin-bottom: 25px; display: flex; gap: 14px; line-height: 1.6; }
+
+        .btn-stack { display: flex; flex-direction: column; gap: 12px; margin-top: 30px; }
+        .action-btn { width: 100%; text-decoration: none; background: var(--btn-bg); color: var(--btn-text); padding: 18px; border-radius: 20px; font-weight: 700; text-align: center; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; cursor: pointer; font-size: 1rem; }
+        
+        /* Green ROM Button */
+        .action-btn.rom { background: var(--success); color: white; }
+        .action-btn.secondary { background: transparent; border: 2px solid var(--btn-bg); color: var(--btn-bg); }
+        .action-btn:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+
+        .markdown-body { font-size: 1.05rem; line-height: 1.8; color: var(--text-dim); }
+        .markdown-body h1, .markdown-body h2 { color: var(--text-main); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-wrapper"><div class="blob blob-1"></div><div class="blob blob-2"></div></div>
+    <div id="overlay" onclick="toggleSidebar()"></div>
+    <div class="menu-btn" onclick="toggleSidebar()"><i data-lucide="menu"></i></div>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">Navigation</div>
+        <a href="https://sd6387400-lang.github.io/" class="sidebar-item"><i data-lucide="home"></i> Home</a>
+        <a href="https://sd6387400-lang.github.io/creations.html" class="sidebar-item"><i data-lucide="layout-template"></i> My Creations</a>
+        
+        <div class="sidebar-header">Flasher History</div>
+        <div id="history-container"></div>
+    </nav>
+
+    <div class="content">
+        <div class="left-panel">
+            <header>
+                <div class="tool-badge"><i data-lucide="cpu" style="width:14px"></i> MI439 PROJECT</div>
+                <h1 id="rel-title">MI439 Flasher</h1>
+                <p style="font-weight: 600; font-size: 1rem; color: var(--text-dim); margin-top: 5px;">
+                    <span id="pub-date">Fetching utility...</span>
+                </p>
+            </header>
+
+            <div class="btn-stack">
+                <a href="#" id="btn-dl" class="action-btn"><i data-lucide="zap"></i> Download Flasher</a>
+                <a href="https://github.com/tavukkdoner/rom/releases" target="_blank" class="action-btn rom"><i data-lucide="box"></i> MI439 ROMs Archive</a>
+                <button onclick="toggleSidebar()" class="action-btn secondary"><i data-lucide="history"></i> Old Flasher Builds</button>
+                <a href="#" id="btn-git" target="_blank" class="action-btn secondary"><i data-lucide="github"></i> View on GitHub</a>
+            </div>
+        </div>
+
+        <div class="right-panel glass-card">
+            <div class="warning-box">
+                <i data-lucide="shield-alert" style="flex-shrink: 0; width: 22px;"></i>
+                <div>
+                    <strong>Liability Disclaimer:</strong> I am NOT responsible for any damage caused to your device. Flashing custom firmware is a risky process. If you're not sure, don't flash.
+                </div>
+            </div>
+
+            <div style="font-weight: 800; font-size: 0.7rem; letter-spacing: 1px; color: var(--accent); margin-bottom: 20px; text-transform: uppercase;">
+                <i data-lucide="clipboard-list" style="width: 14px; vertical-align: middle;"></i> Build Documentation
+            </div>
+            <div id="changelog-md" class="markdown-body">
+                <p>Establishing secure connection to GitHub...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const REPO = "sd6387400-lang/MI439-CustomROM-Flasher";
+        let releases = [];
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        async function init() {
+            try {
+                const res = await fetch(`https://api.github.com/repos/${REPO}/releases`);
+                releases = await res.json();
+                renderRelease(0);
+                populateSidebar();
+            } catch (e) { document.getElementById('changelog-md').innerText = "Error fetching data."; }
+        }
+
+        async function renderRelease(idx) {
+            const rel = releases[idx];
+            document.getElementById('rel-title').innerText = rel.name || rel.tag_name;
+            document.getElementById('pub-date').innerText = `Updated on ${new Date(rel.published_at).toLocaleDateString()}`;
+            
+            const asset = rel.assets[0];
+            document.getElementById('btn-dl').href = asset ? asset.browser_download_url : rel.html_url;
+            document.getElementById('btn-git').href = rel.html_url;
+
+            const mdRes = await fetch('https://api.github.com/markdown', {
+                method: 'POST',
+                body: JSON.stringify({ mode: 'gfm', text: rel.body || "No changelog provided." })
+            });
+            document.getElementById('changelog-md').innerHTML = await mdRes.text();
+            
+            lucide.createIcons();
+            if(window.innerWidth < 960 && document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
+        }
+
+        function populateSidebar() {
+            const container = document.getElementById('history-container');
+            container.innerHTML = '';
+            releases.forEach((rel, i) => {
+                const el = document.createElement('div');
+                el.className = `sidebar-item ${i === 0 ? 'active-rel' : ''}`;
+                el.innerHTML = `<i data-lucide="package"></i> ${rel.name || rel.tag_name}`;
+                el.onclick = () => {
+                    document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active-rel'));
+                    el.classList.add('active-rel');
+                    renderRelease(i);
+                };
+                container.appendChild(el);
+            });
+            lucide.createIcons();
+        }
+
+        init();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
