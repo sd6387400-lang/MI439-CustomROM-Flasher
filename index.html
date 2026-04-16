@@ -464,6 +464,30 @@
         
         body.dark-mode .search-input { background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1); }
         body.dark-mode .back-pill { box-shadow:0 4px 20px rgba(var(--accent-rgb),0.4); }
+        
+        /* ── Sidebar Title ── */
+        .sidebar-header-title {
+            font-size: 2.6rem;
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            line-height: 1;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateX(-14px);
+            animation: slideRight 0.6s var(--m3-decel) 0.1s forwards;
+        }
+        
+        .sidebar-header-subtitle {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-top: 6px;
+        }
+
     </style>
 </head>
 <body data-bg="1" data-sidebar="1" data-loader="1">
@@ -617,6 +641,11 @@
 </div>
 
 <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header-title">
+        Flasher
+        <span class="sidebar-header-subtitle">For Mi439</span>
+    </div>
+
     <div class="search-container">
         <div class="search-input-wrap">
             <button class="search-icon-btn" id="search-icon-btn" onclick="toggleSearchPopup(event)" title="Filter search"><i data-lucide="search" size="17"></i></button>
@@ -624,11 +653,7 @@
         </div>
     </div>
 
-    <div class="nav-actions">
-        <div class="back-pill" onclick="window.location.href='index.html'"><i data-lucide="home" size="17"></i> Home</div>
-    </div>
-
-    <div class="sidebar-link static-link" onclick="window.location.href='https://sd6387400-lang.github.io/'"><i data-lucide="layout-dashboard" size="17"></i> Main</div>
+    <div class="sidebar-link static-link" onclick="window.location.href='https://sd6387400-lang.github.io/'"><i data-lucide="home" size="17"></i> Home</div>
     <div class="sidebar-link static-link" onclick="window.location.href='https://sd6387400-lang.github.io/creations.html'"><i data-lucide="sparkles" size="17"></i> Creations</div>
     <div class="sidebar-link static-link" id="customise-btn" onclick="togglePalettePanel()"><i data-lucide="sliders-horizontal" size="17"></i> Customise</div>
 
@@ -637,6 +662,7 @@
     <div class="sidebar-label">Flasher History</div>
     <div id="sidebar-links"></div>
 </nav>
+
 
 <div class="container" id="reader-view">
     <div style="max-width:900px;margin:0 auto;">
