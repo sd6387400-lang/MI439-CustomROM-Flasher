@@ -43,3 +43,4 @@ Thanks.
 * Better Driver Installation with much clean install
 * Better Management System
 * Making steps much less for more easy install.
+* Linux Installation.
