@@ -216,8 +216,136 @@
         body[data-sidebar="6"] .sidebar-link.active { background: var(--text-main); color: var(--bg-base); }
 
         body.dark-mode .sidebar { border-right-color:rgba(255,255,255,0.07); box-shadow:4px 0 24px rgba(0,0,0,0.4); }
-        @media(min-aspect-ratio:1/1) { .sidebar { left:0!important; } #reader-view,#picker-view { padding-left:320px; } .menu-btn { display:none!important; } #overlay-ui { display:none!important; } }
+        @media(min-aspect-ratio:1/1) { 
+            .sidebar { left:0!important; } 
+            #reader-view,#picker-view { padding-left:320px; } 
+            .menu-btn { display:none!important; } 
+            #overlay-ui { display:none!important; }
+            #btn-sidebar-toggle { display:none!important; }
+        }
         @media(max-aspect-ratio:1/1) { .sidebar.active { left:0; } .container { padding:20px 10px!important; } #reader-view { padding-top:90px!important; } #reader-content { border-radius:20px!important; padding:20px!important; width:100%!important; max-width:none!important; margin:0!important; } }
+
+        /* ── Sidebar Custom Dropdown ── */
+        .custom-dropdown { position: relative; margin-bottom: 20px; }
+        .dropdown-trigger {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 14px;
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.25s var(--m3-decel);
+            text-align: left;
+        }
+        .dropdown-trigger:hover { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.05); }
+        .dropdown-trigger i { color: var(--accent); }
+        .dropdown-trigger .chevron-icon { margin-left: auto; transition: transform 0.3s var(--spring); }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1.5px solid var(--border);
+            border-radius: 18px;
+            padding: 6px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px) scale(0.95);
+            transition: all 0.35s var(--spring);
+            z-index: 1001;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+        .dropdown-menu.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .dropdown-item {
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+        }
+        .dropdown-item:hover { background: rgba(var(--accent-rgb), 0.08); color: var(--accent-text); }
+        .dropdown-item.active { background: var(--accent); color: white; }
+        .dropdown-item.active i { color: white; }
+
+        /* ── Custom Premium Download Dropdown ── */
+        .custom-dl-dropdown { position: relative; display: inline-flex; z-index: 10; flex: 1; min-width: 200px; }
+        .dl-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 22px;
+            background: var(--accent);
+            color: white;
+            border-radius: 100px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.3s var(--spring), box-shadow 0.3s;
+            box-shadow: 0 4px 16px rgba(var(--accent-rgb), 0.3);
+            border: none;
+            font-size: 0.9rem;
+            width: 100%;
+            justify-content: center;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .dl-trigger:hover { opacity: 0.9; transform: scale(1.02); }
+        .dl-trigger:active { transform: scale(0.97); }
+
+        .dl-menu {
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%) translateY(-15px) scale(0.92);
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1.5px solid var(--border);
+            border-radius: 24px;
+            padding: 10px;
+            min-width: 220px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s var(--m3-decel), transform 0.45s var(--spring), visibility 0.4s;
+            z-index: 1100;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+        }
+        .dl-menu.open { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0) scale(1); }
+        .dl-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
+            border-radius: 16px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.88rem;
+            transition: all 0.25s var(--m3-decel);
+            cursor: pointer;
+        }
+        .dl-menu-item:hover { background: rgba(var(--accent-rgb), 0.1); color: var(--accent-text); transform: translateX(5px); }
+        .dl-menu-item i { color: var(--accent); opacity: 0.9; }
+
+        body.dark-mode .dl-menu {
+            background: rgba(var(--accent-rgb), 0.05);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.6);
+            border-color: rgba(255,255,255,0.08);
+        }
         .sidebar-label { font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent-text); font-weight:800; padding:0 6px; margin-bottom:12px; opacity:0.7; }
 
         /* ── Search ── */
@@ -659,6 +787,18 @@
 
     <hr style="opacity:0.1;margin:14px 0">
 
+    <div class="sidebar-label">Filter by OS</div>
+    <div class="custom-dropdown" id="os-filter-dropdown">
+        <button class="dropdown-trigger" onclick="toggleDropdownMenu('os-filter-menu')">
+            <i data-lucide="monitor" size="17"></i>
+            <span id="selected-os-text">All Platforms</span>
+            <i data-lucide="chevron-down" size="16" class="chevron-icon"></i>
+        </button>
+        <div class="dropdown-menu" id="os-filter-menu">
+            <!-- Items added by JS -->
+        </div>
+    </div>
+
     <div class="sidebar-label">Flasher History</div>
     <div id="sidebar-links"></div>
 </nav>
@@ -675,7 +815,7 @@
 
         <div class="nav-actions">
             <a href="#" id="btn-dl" class="back-pill"><i data-lucide="zap" size="18"></i> Download Flasher</a>
-            <a href="https://github.com/tavukkdoner/rom/releases" target="_blank" class="back-pill" style="background:var(--shape3)"><i data-lucide="box" size="18"></i> ROM Archive</a>
+            <a href="#" onclick="toggleSidebar(); return false;" class="back-pill" id="btn-sidebar-toggle" style="background:var(--shape3)"><i data-lucide="history" size="18"></i> View Old Releases</a>
             <a href="#" id="btn-git" target="_blank" class="back-pill" style="background:transparent; border:2px solid var(--accent); color:var(--accent-text)"><i data-lucide="code" size="18"></i> View GitHub</a>
         </div>
 
@@ -1206,6 +1346,50 @@ function hideLoader() { const l = document.getElementById('loader'); l.classList
 function triggerBarAnim() { const bar = document.getElementById('m3-progress'); bar.classList.remove('active'); bar.offsetHeight; bar.classList.add('active'); setTimeout(() => bar.classList.remove('active'), 700); }
 function toggleSidebar() { const sidebar = document.getElementById('sidebar'); const overlay = document.getElementById('overlay-ui'); const btnIcon = document.querySelector('.menu-btn i'); sidebar.classList.toggle('active'); overlay.classList.toggle('active'); btnIcon.setAttribute('data-lucide', sidebar.classList.contains('active') ? 'x' : 'menu'); lucide.createIcons(); }
 
+function toggleDlMenu(e) {
+    e.stopPropagation();
+    const btn = e.currentTarget;
+    const menu = btn.nextElementSibling;
+    const isOpen = menu.classList.contains('open');
+    document.querySelectorAll('.dl-menu, .dropdown-menu').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.chevron-icon').forEach(c => c.style.transform = 'rotate(0deg)');
+    if (!isOpen) {
+        menu.classList.add('open');
+        btn.querySelector('.chevron-icon').style.transform = 'rotate(180deg)';
+    }
+}
+
+function toggleDropdownMenu(id) {
+    const menu = document.getElementById(id);
+    const btn = menu.previousElementSibling;
+    const isOpen = menu.classList.contains('open');
+    document.querySelectorAll('.dl-menu, .dropdown-menu').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.chevron-icon').forEach(c => c.style.transform = 'rotate(0deg)');
+    if (!isOpen) {
+        menu.classList.add('open');
+        btn.querySelector('.chevron-icon').style.transform = 'rotate(180deg)';
+    }
+}
+
+function startDownload(url) {
+    triggerBarAnim();
+    const progress = document.getElementById('m3-progress');
+    progress.classList.add('active');
+    setTimeout(() => {
+        window.location.href = url;
+        progress.classList.remove('active');
+        document.querySelectorAll('.dl-menu').forEach(m => m.classList.remove('open'));
+        document.querySelectorAll('.chevron-icon').forEach(c => c.style.transform = 'rotate(0deg)');
+    }, 400);
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.custom-dl-dropdown') && !e.target.closest('.custom-dropdown')) {
+        document.querySelectorAll('.dl-menu, .dropdown-menu').forEach(m => m.classList.remove('open'));
+        document.querySelectorAll('.chevron-icon').forEach(c => c.style.transform = 'rotate(0deg)');
+    }
+});
+
 function copyCode(btn) {
     const pre = btn.parentElement ? btn.parentElement.querySelector('pre') : null; if(!pre) return;
     const text = pre.innerText || pre.textContent || '';
@@ -1220,6 +1404,7 @@ async function initFlasher() {
         releases = await res.json();
         
         if (releases.length > 0) {
+            updateOSDropdown();
             populateSidebar();
             renderRelease(0);
         } else {
@@ -1230,6 +1415,69 @@ async function initFlasher() {
     } finally {
         hideLoader();
     }
+}
+
+let selectedOS = 'all';
+
+function updateOSDropdown() {
+    const menu = document.getElementById('os-filter-menu');
+    if (!menu) return;
+    
+    const osTypes = ['windows', 'linux', 'mac'];
+    const available = [];
+    
+    osTypes.forEach(os => {
+        const found = releases.some(rel => 
+            rel.assets && rel.assets.some(asset => 
+                asset.name && asset.name.toLowerCase().includes(os)
+            )
+        );
+        if (found) available.push(os);
+    });
+    
+    const buildItem = (val, label) => {
+        const div = document.createElement('div');
+        div.className = 'dropdown-item' + (selectedOS == val ? ' active' : '');
+        div.innerHTML = `<i data-lucide="monitor" size="14"></i> <span>${label}</span>`;
+        div.onclick = () => filterByOS(val);
+        return div;
+    };
+
+    menu.innerHTML = '';
+    menu.appendChild(buildItem('all', 'All Platforms'));
+    available.forEach(os => {
+        const label = os.charAt(0).toUpperCase() + os.slice(1);
+        menu.appendChild(buildItem(os, label));
+    });
+    
+    const container = document.getElementById('os-filter-dropdown');
+    if (available.length === 0) {
+        container.style.display = 'none';
+        container.previousElementSibling.style.display = 'none';
+    } else {
+        container.style.display = 'block';
+        container.previousElementSibling.style.display = 'block';
+    }
+    lucide.createIcons();
+}
+
+function filterByOS(val) {
+    selectedOS = val;
+    const textEl = document.getElementById('selected-os-text');
+    if(textEl) textEl.innerText = (val === 'all') ? 'All Platforms' : val.charAt(0).toUpperCase() + val.slice(1);
+    
+    document.querySelectorAll('#os-filter-menu .dropdown-item').forEach(item => {
+        item.classList.toggle('active', item.innerText.toLowerCase().includes(val.toLowerCase()));
+    });
+    
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.chevron-icon').forEach(c => c.style.transform = 'rotate(0deg)');
+
+    populateSidebar();
+    
+    const container = document.getElementById('sidebar-links');
+    const firstLink = container.querySelector('.sidebar-link');
+    if (firstLink) firstLink.click();
 }
 
 const renderer = new marked.Renderer();
@@ -1243,8 +1491,51 @@ function renderRelease(idx) {
     document.getElementById('rel-title').innerHTML = `${rel.name || rel.tag_name} <span class="title-accent">Release</span>`;
     document.getElementById('pub-date').innerText = `Updated on ${new Date(rel.published_at).toLocaleDateString()}`;
 
-    const asset = rel.assets[0];
-    document.getElementById('btn-dl').href = asset ? asset.browser_download_url : rel.html_url;
+    // Action Buttons Logic
+    const navActions = document.querySelector('.nav-actions');
+    navActions.querySelectorAll('.version-dl-btn').forEach(b => b.remove());
+    const dlBtn = document.getElementById('btn-dl');
+    
+    let availableInRel = [];
+    const osTypes = ['windows', 'linux', 'mac'];
+    osTypes.forEach(os => {
+        const asset = rel.assets?.find(a => a.name && a.name.toLowerCase().includes(os));
+        if (asset) availableInRel.push({ os, asset });
+    });
+
+    if (selectedOS !== 'all') {
+        const match = availableInRel.find(x => x.os == selectedOS);
+        dlBtn.style.display = 'inline-flex';
+        dlBtn.href = match ? match.asset.browser_download_url : (rel.assets[0]?.browser_download_url || '#');
+        dlBtn.innerHTML = `<i data-lucide="zap" size="18"></i> Download for ${selectedOS.charAt(0).toUpperCase() + selectedOS.slice(1)}`;
+    } else {
+        if (availableInRel.length > 1) {
+            dlBtn.style.display = 'none';
+            const wrap = document.createElement('div');
+            wrap.className = 'custom-dl-dropdown version-dl-btn';
+            wrap.innerHTML = `
+                <button class="dl-trigger" onclick="toggleDlMenu(event)">
+                    <i data-lucide="zap" size="18"></i> 
+                    <span>Download Flasher</span>
+                    <i data-lucide="chevron-down" size="16" class="chevron-icon" style="transition:transform 0.3s var(--spring)"></i>
+                </button>
+                <div class="dl-menu">
+                    ${availableInRel.map(item => `
+                        <div class="dl-menu-item" onclick="startDownload('${item.asset.browser_download_url}')">
+                            <i data-lucide="monitor" size="16"></i> 
+                            <span>Download for ${item.os.charAt(0).toUpperCase() + item.os.slice(1)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            navActions.insertBefore(wrap, dlBtn);
+        } else {
+            dlBtn.style.display = 'inline-flex';
+            const asset = availableInRel[0]?.asset || rel.assets[0];
+            dlBtn.href = asset ? asset.browser_download_url : '#';
+            dlBtn.innerHTML = `<i data-lucide="zap" size="18"></i> Download Flasher`;
+        }
+    }
     document.getElementById('btn-git').href = rel.html_url;
 
     // Apply the exact upgraded markdown replacement regexes (including smooth collapse fix and <sym> tag)
@@ -1282,7 +1573,21 @@ function renderRelease(idx) {
 function populateSidebar() {
     const container = document.getElementById('sidebar-links');
     container.innerHTML = '';
-    releases.forEach((rel, i) => {
+    
+    const filteredReleases = releases.filter(rel => {
+        if (selectedOS === 'all') return true;
+        return rel.assets && rel.assets.some(asset => 
+            asset.name && asset.name.toLowerCase().includes(selectedOS.toLowerCase())
+        );
+    });
+
+    if (filteredReleases.length === 0 && selectedOS !== 'all') {
+        container.innerHTML = '<div style="padding:20px; font-size:0.8rem; opacity:0.6; text-align:center;">No releases found for this OS.</div>';
+        return;
+    }
+
+    filteredReleases.forEach((rel, i) => {
+        const originalIdx = releases.indexOf(rel);
         const el = document.createElement('div');
         el.className = `sidebar-link doc-link ${i === 0 ? 'active' : ''}`;
         el.innerHTML = `<i data-lucide="package" size="16"></i> <span class="link-text">${rel.name || rel.tag_name}</span>`;
@@ -1290,7 +1595,7 @@ function populateSidebar() {
         el.onclick = () => {
             document.querySelectorAll('#sidebar-links .sidebar-link').forEach(s => s.classList.remove('active'));
             el.classList.add('active');
-            renderRelease(i);
+            renderRelease(originalIdx);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         container.appendChild(el);
